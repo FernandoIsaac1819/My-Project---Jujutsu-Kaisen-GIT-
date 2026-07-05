@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bf3503bc982e9604696be14e7c0b56b1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 335796
+  packageName: Burning Effect Tool
+  packageVersion: 1.0
+  assetPath: Assets/Burning Effect Tool/Demo_URP/materials/6_Gameobjects/Skybox_Mat_default.mat
+  uploadId: 809324

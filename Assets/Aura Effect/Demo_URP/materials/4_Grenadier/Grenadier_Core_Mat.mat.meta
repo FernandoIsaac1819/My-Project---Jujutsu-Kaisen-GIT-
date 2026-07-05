@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5444f6fbdd898fe4bbc427cef1376738
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 335796
+  packageName: Burning Effect Tool
+  packageVersion: 1.0
+  assetPath: Assets/Burning Effect Tool/Demo_URP/materials/4_Grenadier/Grenadier_Core_Mat.mat
+  uploadId: 809324

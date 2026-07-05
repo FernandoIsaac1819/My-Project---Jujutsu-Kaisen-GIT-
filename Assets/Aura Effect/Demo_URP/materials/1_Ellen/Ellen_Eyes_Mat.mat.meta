@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5253d925edc667d44bec15316734c8c6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 335796
+  packageName: Burning Effect Tool
+  packageVersion: 1.0
+  assetPath: Assets/Burning Effect Tool/Demo_URP/materials/1_Ellen/Ellen_Eyes_Mat.mat
+  uploadId: 809324

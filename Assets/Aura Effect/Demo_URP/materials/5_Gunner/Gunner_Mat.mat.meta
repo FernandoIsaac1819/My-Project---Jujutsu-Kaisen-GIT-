@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5f94cc0882e40c44ba503e3153426ad9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 335796
+  packageName: Burning Effect Tool
+  packageVersion: 1.0
+  assetPath: Assets/Burning Effect Tool/Demo_URP/materials/5_Gunner/Gunner_Mat.mat
+  uploadId: 809324

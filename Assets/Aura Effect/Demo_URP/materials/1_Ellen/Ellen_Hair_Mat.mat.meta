@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 66dc4d9e004d336409753fa41b3f6cf5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 335796
+  packageName: Burning Effect Tool
+  packageVersion: 1.0
+  assetPath: Assets/Burning Effect Tool/Demo_URP/materials/1_Ellen/Ellen_Hair_Mat.mat
+  uploadId: 809324
