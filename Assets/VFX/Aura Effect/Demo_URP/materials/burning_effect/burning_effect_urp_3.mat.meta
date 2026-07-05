@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 54fd21c4635f439428ce4a751f2431bf
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 335796
+  packageName: Burning Effect Tool
+  packageVersion: 1.0
+  assetPath: Assets/Burning Effect Tool/Demo_URP/materials/burning_effect/burning_effect_urp_3.mat
+  uploadId: 809324
