@@ -3,12 +3,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using Haipeng.burning_effect_tool;
+using System;
 
 namespace JJK.CursedEnergy
 {
 
     public class CE_Controller : MonoBehaviour
     {
+        [SerializeField] private InputReader _input;
+
         [Header("Target")]
         [Tooltip("Optional: assign this character's dedicated burn-effect RawImage directly. " +
                  "REQUIRED if there is more than one aura rig in the scene (e.g. multiple " +
@@ -46,12 +49,29 @@ namespace JJK.CursedEnergy
         private float currentEdgeValue;
 
         private Coroutine edgeRoutine;
-        private Coroutine auraSizeRoutine;
         private Coroutine colorRoutine;
 
         private Color lastAppliedFireColor;
 
         private bool isEffectOn;
+        private bool isReinforced = false;
+
+
+        private void OnEnable()
+        {
+            _input.ReinforceEvent += HandleReinforceVFX;
+        }
+
+        private void OnDisable()
+        {
+            _input.ReinforceEvent -= HandleReinforceVFX;
+        }
+
+        private void HandleReinforceVFX()
+        {
+            isReinforced = !isReinforced;
+            Debug.Log($"Reinforce toggled: {isReinforced}");
+        }
 
         private void Start()
         {
@@ -92,7 +112,7 @@ namespace JJK.CursedEnergy
 
             // Infer visible/hidden state from wherever edge currently sits, so the
             // first FadeIn()/FadeOut()/toggle-key press moves the correct direction.
-            isEffectOn = currentEdgeValue <= (edgeMin + edgeMax) * 0.5f;
+            isReinforced = currentEdgeValue <= (edgeMin + edgeMax) * 0.5f;
         }
 
         /// <summary>
@@ -138,10 +158,7 @@ namespace JJK.CursedEnergy
 
         private void Update()
         {
-            if (Input.GetKeyDown(toggleKey))
-            {
-                ToggleEffect();
-            }
+            if (isReinforced) FadeIn(); else FadeOut();
 
             // Picks up color changes made directly in the Inspector at runtime,
             // so you can drag the swatch during Play mode to test colors live.
@@ -152,18 +169,6 @@ namespace JJK.CursedEnergy
             }
         }
 
-        // ---------------------------------------------------------------
-        // Public control API - call these from ability scripts, etc.
-        // ---------------------------------------------------------------
-
-        /// <summary>Flips the aura between fully visible and fully hidden.</summary>
-        public void ToggleEffect()
-        {
-            isEffectOn = !isEffectOn;
-            if (isEffectOn) FadeIn(); else FadeOut();
-        }
-
-        /// <summary>Makes the aura appear. Moves the edge value toward its shader-defined MINIMUM (more visible), using edgeInSpeed.</summary>
         public void FadeIn() => SetEdgeTarget(edgeMin);
 
         /// <summary>Makes the aura disappear. Moves the edge value toward its shader-defined MAXIMUM (more hidden), using edgeOutSpeed.</summary>

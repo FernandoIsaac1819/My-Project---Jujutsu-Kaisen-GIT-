@@ -15,6 +15,7 @@ public class InputTester : MonoBehaviour
     [SerializeField] private int _fontSize = 24;
     [SerializeField] private Color _textColor = Color.white;
     private GUIStyle _style;
+    bool reinforce = false;
 
     private void OnEnable()
     {
@@ -33,6 +34,7 @@ public class InputTester : MonoBehaviour
     private void OnJump() => Debug.Log("Jump pressed");
     private void OnJumpReleased() => Debug.Log("Jump released");
     private void OnDash() => Debug.Log("Dash pressed");
+    
 
 
     private void OnGUI()

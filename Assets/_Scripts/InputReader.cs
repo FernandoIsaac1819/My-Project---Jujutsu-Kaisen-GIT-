@@ -20,7 +20,7 @@ public class InputReader : ScriptableObject, PlayerControls.IPlayerActions
     public event Action JumpCanceledEvent;  // fired when released (useful later for variable jump height)
     public event Action DashEvent;          // fired the frame the button is pressed
     public event Action LockOnEvent;        // fired the frame the lock-on button is pressed
-
+    public event Action ReinforceEvent;    // fired the frame the reinforce button is pressed
     // ----- Stick values (continuous, polled by consumers) -----
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -78,6 +78,6 @@ public class InputReader : ScriptableObject, PlayerControls.IPlayerActions
 
     public void OnReinforce(InputAction.CallbackContext context)
     {
-        if (context.performed) LockOnEvent?.Invoke();
+        if (context.performed) ReinforceEvent?.Invoke();
     }
 }
