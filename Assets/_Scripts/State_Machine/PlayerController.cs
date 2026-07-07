@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cinemachine;
+using System;
 
 /// <summary>
 /// The shared context for every state. Holds all references and runtime state,
@@ -19,6 +20,16 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Animator that plays the movement clips; crossfaded from code per state.")]
     [SerializeField] private Animator _animator;
     private CharacterController _cc;
+    public bool isReinforced = false;
+
+    public event System.Action<bool> ReinforceChanged;
+    
+
+    private void OnReinforce()
+    {
+        isReinforced = !isReinforced;
+        ReinforceChanged?.Invoke(isReinforced);   // fires with the NEW value, already flipped
+    }
 
     [Header("Cinemachine")]
     [Tooltip("Free-movement virtual camera (over-shoulder orbit).")]
@@ -28,11 +39,23 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Priority given to the active vcam; the inactive one sits at 0.")]
     [SerializeField] private int _activeCameraPriority = 20;
 
-    [Header("Movement")]
-    [Tooltip("Walk speed (m/s) when the stick is pushed below the Run Threshold.")]
+    [Tooltip("Camera relative movement type")]
+    [Header("Free Movement - Locomotion")]
+    
     [SerializeField] private float _walkSpeed = 2f;
-    [Tooltip("Run speed (m/s) when the stick is pushed past the Run Threshold.")]
-    [SerializeField] private float _runSpeed = 6f;
+    [SerializeField] private float _f_baseRunSpeed = 1.5f;
+    [SerializeField] private float _f_reinforcedRunSpeed = 2f;
+    float _runSpeed = 6f;
+
+    [Header("Free Movement - Jump")]
+    [Tooltip("Peak jump height in metres.")]
+    [SerializeField] private float _jumpHeight = 2f;
+    [Tooltip("Gravity in m/s^2 (negative). More negative = heavier, snappier falls.")]
+    [SerializeField] private float _gravity = -20f;
+    [Tooltip("Constant small downward speed while grounded so isGrounded stays stable on steps/slopes.")]
+    [SerializeField] private float _groundedStick = -2f;
+
+    [Header("Left stick input")]
     [Range(0f, 1f)]
     [Tooltip("Stick push (0-1) at which walking switches to running.")]
     [SerializeField] private float _runThreshold = 0.7f;
@@ -45,20 +68,13 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How fast (deg/sec) the character turns while airborne.")]
     [SerializeField] private float _airRotationSpeed = 360f;
 
-    [Header("Jump / Gravity")]
-    [Tooltip("Peak jump height in metres.")]
-    [SerializeField] private float _jumpHeight = 2f;
-    [Tooltip("Gravity in m/s^2 (negative). More negative = heavier, snappier falls.")]
-    [SerializeField] private float _gravity = -20f;
-    [Tooltip("Constant small downward speed while grounded so isGrounded stays stable on steps/slopes.")]
-    [SerializeField] private float _groundedStick = -2f;
 
-    [Header("Air Control")]
+    [Header("Free movement - Air Control")]
     [Range(0f, 1f)]
     [Tooltip("How much you can steer mid-air. 0 = locked to takeoff trajectory, 1 = full steering.")]
     [SerializeField] private float _airControl = 0.5f;
 
-    [Header("Dash")]
+    [Header("Free movement - Dash")]
     [Tooltip("Dash burst speed in m/s.")]
     [SerializeField] private float _dashSpeed = 16f;
     [Tooltip("How long the dash burst lasts (seconds). Speed x duration = distance covered.")]
@@ -70,9 +86,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How long the neutral landing recovery holds before returning to idle (seconds).")]
     [SerializeField] private float _landDuration = 0.25f;
 
-    [Header("Target Movement")]
+    [Header("Target Movement - Locomotion")]
     [Tooltip("Run-only movement speed (m/s) while locked on.")]
-    [SerializeField] private float _targetRunSpeed = 6f;
+    [SerializeField] private float _t_RunSpeed = 6f;
     [Tooltip("Closest you can orbit the target (m). Stops rushing through it and the fast spin up close.")]
     [SerializeField] private float _minTargetDistance = 2f;
     [Range(0f, 1f)]
@@ -116,6 +132,8 @@ public class PlayerController : MonoBehaviour
     public bool DashRequested { get; private set; }
     public bool IsGrounded => _cc.isGrounded;
     public float VerticalVelocity => _verticalVelocity;
+
+
 
     // ----- Tuning accessors, read by states -----
     public float WalkSpeed => _walkSpeed;
@@ -178,6 +196,7 @@ public class PlayerController : MonoBehaviour
         _input.JumpEvent += OnJump;
         _input.DashEvent += OnDash;
         _input.LockOnEvent += OnLockOnPressed;
+        _input.ReinforceEvent += OnReinforce;
     }
 
     private void OnDisable()
@@ -185,6 +204,7 @@ public class PlayerController : MonoBehaviour
         _input.JumpEvent -= OnJump;
         _input.DashEvent -= OnDash;
         _input.LockOnEvent -= OnLockOnPressed;
+        _input.ReinforceEvent -= OnReinforce;
     }
 
     private void Start()
@@ -196,6 +216,8 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         float dt = Time.deltaTime;
+
+        _runSpeed = isReinforced ? _f_reinforcedRunSpeed : _f_baseRunSpeed;
 
         // 1. Read input for this frame.
         MoveInput = _input.MoveInput;
@@ -224,7 +246,9 @@ public class PlayerController : MonoBehaviour
         // 5. Clear single-frame input requests. (Timed input buffering replaces this later.)
         JumpRequested = false;
         DashRequested = false;
+
     }
+
 
     // ----- Helpers states call -----
 
@@ -463,7 +487,7 @@ public class PlayerController : MonoBehaviour
         Vector3 move = forward * MoveInput.y + right * MoveInput.x;
         if (move.sqrMagnitude < 0.0001f) { SetPlanarVelocity(Vector3.zero); return; }
 
-        SetPlanarVelocity(ClampApproachToTarget(move.normalized * _targetRunSpeed));
+        SetPlanarVelocity(ClampApproachToTarget(move.normalized * _t_RunSpeed));
     }
 
     /// Drives the target 2D blend tree. Since the player faces the target, the stick maps

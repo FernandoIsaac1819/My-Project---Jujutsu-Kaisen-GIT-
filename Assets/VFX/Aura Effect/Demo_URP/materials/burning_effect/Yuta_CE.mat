@@ -140,9 +140,9 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EdgeFalloff: 0.58
+    - _EdgeFalloff: 2.35
     - _EnvironmentReflections: 1
-    - _Fade: 0.938
+    - _Fade: 1
     - _Float: -0.06
     - _Float_1: 0.07
     - _Float_2: 0.9
@@ -155,7 +155,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _OutlineOffset: 0.00149
+    - _OutlineOffset: 0.00439
     - _Outline_thickness: 0.0048
     - _Parallax: 0.005
     - _QueueControl: 0

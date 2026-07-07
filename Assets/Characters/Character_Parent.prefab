@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8697224844684138665}
   - component: {fileID: 3063356746539192912}
   - component: {fileID: 6557120163386222494}
+  - component: {fileID: 1888781051943158860}
   m_Layer: 0
   m_Name: Character_Parent
   m_TagString: Player
@@ -160,11 +161,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72d02a97702e0dc49afd270b24d7ad5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JJK.CursedEnergy.CE_Effect_Controller
+  _input: {fileID: 0}
   Aura_ImageHolder: {fileID: 0}
   FadeIn_Speed: 2
   FadeOut_Speed: 2
   Aura_Color: {r: 0, g: 0, b: 0, a: 0}
-  toggleKey: 119
+--- !u!114 &1888781051943158860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037431854997947397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c95b4e44a7f87234ab5cd08fcf24802e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReinforcementController
 --- !u!1 &7228473817103099792
 GameObject:
   m_ObjectHideFlags: 0
