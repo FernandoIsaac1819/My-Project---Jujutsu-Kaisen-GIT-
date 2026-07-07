@@ -1,14 +1,5 @@
 fileFormatVersion: 2
 guid: adef7409d7e30e6479619d6df4fff2b4
-MonoImporter:
-  externalObjects: {}
-  serializedVersion: 2
-  defaultReferences: []
-  executionOrder: 0
-  icon: {instanceID: 0}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
   productId: 335796
@@ -16,3 +7,12 @@ AssetOrigin:
   packageVersion: 1.0
   assetPath: Assets/Burning Effect Tool/scripts/Burning_effect_manager.cs
   uploadId: 809324
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 300
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

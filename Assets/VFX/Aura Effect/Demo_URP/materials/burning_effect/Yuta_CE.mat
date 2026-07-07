@@ -140,9 +140,9 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EdgeFalloff: 2.35
+    - _EdgeFalloff: 2.57
     - _EnvironmentReflections: 1
-    - _Fade: 1
+    - _Fade: 0
     - _Float: -0.06
     - _Float_1: 0.07
     - _Float_2: 0.9
@@ -155,7 +155,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _OutlineOffset: 0.00439
+    - _OutlineOffset: 0.00275
     - _Outline_thickness: 0.0048
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -198,7 +198,7 @@ Material:
     - _distortion_speed: {r: 0, g: -0.1, b: 0, a: 0}
     - _distortion_stength: {r: 0.001, g: -0.02, b: 0, a: 0}
     - _distortion_tiling: {r: 3, g: 1.7, b: 0, a: 0}
-    - _fire_color: {r: 20.421322, g: 5.6970534, b: 15.248606, a: 0}
+    - _fire_color: {r: 21.385023, g: 6.0811853, b: 16.023092, a: 0}
     - _main_color: {r: 23.968628, g: 0, b: 0, a: 0}
     - _offset: {r: 0, g: 0, b: 0, a: 0}
     - _tiling_1: {r: 5, g: 5, b: 0, a: 0}

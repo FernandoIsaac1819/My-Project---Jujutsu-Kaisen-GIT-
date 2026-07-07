@@ -140,9 +140,9 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EdgeFalloff: 0.58
+    - _EdgeFalloff: 1.86
     - _EnvironmentReflections: 1
-    - _Fade: 0.938
+    - _Fade: 1
     - _Float: -0.06
     - _Float_1: 0.07
     - _Float_2: 0.9
@@ -155,7 +155,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _OutlineOffset: 0.00149
+    - _OutlineOffset: 0.00205
     - _Outline_thickness: 0.0048
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -172,7 +172,7 @@ Material:
     - _adjust_divide: 9
     - _color_gradient: 2
     - _color_gradient_speed: 0.1
-    - _color_gradient_strength: 2.5
+    - _color_gradient_strength: 0.5
     - _distortion_noise_scale: 35
     - _edge: 0.537
     - _edge_1: -0.5
@@ -195,10 +195,10 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Vector2_offset: {r: -0.06, g: 0, b: 0, a: 0}
     - _Vector2_speed: {r: 0, g: -0.3, b: 0, a: 0}
-    - _distortion_speed: {r: 0, g: -0.1, b: 0, a: 0}
-    - _distortion_stength: {r: 0.001, g: -0.02, b: 0, a: 0}
+    - _distortion_speed: {r: 0, g: -0.13, b: 0, a: 0}
+    - _distortion_stength: {r: 0.001, g: -0.015, b: 0, a: 0}
     - _distortion_tiling: {r: 3, g: 1.7, b: 0, a: 0}
-    - _fire_color: {r: 3.4488797, g: 19.653677, b: 20.805443, a: 0}
+    - _fire_color: {r: 22.985193, g: 4.1819406, b: 13.245312, a: 0}
     - _main_color: {r: 23.968628, g: 0, b: 0, a: 0}
     - _offset: {r: 0, g: 0, b: 0, a: 0}
     - _tiling_1: {r: 5, g: 5, b: 0, a: 0}

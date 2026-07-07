@@ -24,7 +24,6 @@ public class PlayerController : MonoBehaviour
 
     public event System.Action<bool> ReinforceChanged;
     
-
     private void OnReinforce()
     {
         isReinforced = !isReinforced;
@@ -45,11 +44,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _walkSpeed = 2f;
     [SerializeField] private float _f_baseRunSpeed = 1.5f;
     [SerializeField] private float _f_reinforcedRunSpeed = 2f;
-    float _runSpeed = 6f;
+    private float _runSpeed = 6f;
 
     [Header("Free Movement - Jump")]
     [Tooltip("Peak jump height in metres.")]
-    [SerializeField] private float _jumpHeight = 2f;
+    private float _jumpHeight = 2f;
+    [SerializeField] private float _f_baseJump = 1.5f;
+    [SerializeField] private float _f_reinforcedJump = 2f;
+
     [Tooltip("Gravity in m/s^2 (negative). More negative = heavier, snappier falls.")]
     [SerializeField] private float _gravity = -20f;
     [Tooltip("Constant small downward speed while grounded so isGrounded stays stable on steps/slopes.")]
@@ -76,9 +78,17 @@ public class PlayerController : MonoBehaviour
 
     [Header("Free movement - Dash")]
     [Tooltip("Dash burst speed in m/s.")]
-    [SerializeField] private float _dashSpeed = 16f;
+
+    private float _dashSpeed = 16f;
+    [SerializeField] private float _f_reinforcedDashSpeed;
+    [SerializeField] private float _f_baseDashSpeed;
+
+
     [Tooltip("How long the dash burst lasts (seconds). Speed x duration = distance covered.")]
-    [SerializeField] private float _dashDuration = 0.2f;
+    private float _dashDuration = 0.2f;
+    [SerializeField] private float _f_reinforcedDashDuration;
+    [SerializeField] private float _f_baseDashDuration;
+    
     [Tooltip("Seconds after a dash ends before you can dash again.")]
     [SerializeField] private float _dashCooldown = 0.8f;
 
@@ -351,6 +361,7 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyJumpImpulse()
     {
+        _jumpHeight = isReinforced ? _f_reinforcedJump : _f_baseJump;
         _verticalVelocity = Mathf.Sqrt(2f * -_gravity * _jumpHeight);
     }
 

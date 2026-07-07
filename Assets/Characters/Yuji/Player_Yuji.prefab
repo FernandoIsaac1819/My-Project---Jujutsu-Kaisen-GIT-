@@ -281,7 +281,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1240149296362323609, guid: 17e0c84977190754085a9af741bfb252, type: 3}
+  - {fileID: 2100000, guid: 86b43f2221a67214cb1c7ccdcbbb5298, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2279,7 +2279,24 @@ PrefabInstance:
       propertyPath: m_Avatar
       value: 
       objectReference: {fileID: 9000000, guid: 17e0c84977190754085a9af741bfb252, type: 3}
-    m_RemovedComponents: []
+    - target: {fileID: 8842345711309760322, guid: d4bef8ec3953bd244bd046795bd1ae23, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6600001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8842345711309760322, guid: d4bef8ec3953bd244bd046795bd1ae23, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6600001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8842345711309760322, guid: d4bef8ec3953bd244bd046795bd1ae23, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6600001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8842345711309760322, guid: d4bef8ec3953bd244bd046795bd1ae23, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1888781051943158860, guid: d4bef8ec3953bd244bd046795bd1ae23, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 865186171138326719, guid: d4bef8ec3953bd244bd046795bd1ae23, type: 3}

@@ -20,28 +20,26 @@ namespace JJK.CursedEnergy
 
         [Header("Fade Speeds")]
         [Tooltip("How fast the aura fades in (edge moves toward min / visible).")]
-        [SerializeField] private float _fadeInSpeed = 2f;
-
-        [Tooltip("How fast the aura fades out (edge moves toward max / hidden).")]
         [SerializeField] private float _fadeOutSpeed = 2f;
 
-        // Shader property references (must match the Reference names in the Shader Graph blackboard).
-        private const string EdgeProperty = "_edge_1";
-        private const string OutlineOffsetProperty = "_OutlineOffset";
-        private const string FireColorProperty = "_fire_color";
+        [Tooltip("How fast the aura fades out (edge moves toward max / hidden).")]
+        [SerializeField] private float _fadeInSpeed = 2f;
 
+        // Shader property references (must match the Reference names in the Shader Graph blackboard).
+        private const string FadeProperty = "_Fade";
+        private const string OutlineOffsetProperty = "_OutlineOffset";
+        
         private const bool InstanceMaterial = true;   // clone the material so each character animates independently
 
         private Material _material;
-        private int _edgeId;
+        private int _fadeID;
         private int _outlineOffsetId;
-        private int _fireColorId;
 
-        private float _edgeMin;
-        private float _edgeMax;
-        private float _currentEdge;
+        private float _fadeMin;
+        private float _fadeMax;
+        private float _currentFadeValue;
 
-        private Coroutine _edgeRoutine;
+        private Coroutine _fadeRoutine;
 
         /// <summary>Resolves the player reference and subscribes to its reinforcement event.</summary>
         private void OnEnable()
@@ -68,7 +66,7 @@ namespace JJK.CursedEnergy
         private void Start()
         {
             _player = _player != null ? _player : GetComponent<PlayerController>();
-            
+
             RawImage target = _auraImage != null ? _auraImage : FindRawImageFromManager();
             if (target == null)
             {
@@ -80,20 +78,19 @@ namespace JJK.CursedEnergy
             _material = InstanceMaterial ? new Material(target.material) : target.material;
             if (InstanceMaterial) target.material = _material;
 
-            _edgeId = Shader.PropertyToID(EdgeProperty);
             _outlineOffsetId = Shader.PropertyToID(OutlineOffsetProperty);
-            _fireColorId = Shader.PropertyToID(FireColorProperty);
+            _fadeID = Shader.PropertyToID(FadeProperty);
 
-            WarnIfMissing(_edgeId, EdgeProperty);
+
+            WarnIfMissing(_fadeID, FadeProperty);
             WarnIfMissing(_outlineOffsetId, OutlineOffsetProperty);
-            WarnIfMissing(_fireColorId, FireColorProperty);
 
-            GetShaderRange(_material, EdgeProperty, out _edgeMin, out _edgeMax);
+            GetShaderRange(_material, FadeProperty, out _fadeMax, out _fadeMin);
 
             // Start matching the player's state: reinforced = visible (min), otherwise hidden (max).
-            // Keep _currentEdge in sync so the first fade computes its direction correctly.
-            _currentEdge = _player.isReinforced ? _edgeMin : _edgeMax;
-            _material.SetFloat(_edgeId, _currentEdge);
+            // Keep _currentFadeValue in sync so the first fade computes its direction correctly.
+            _currentFadeValue = _player.isReinforced ? _fadeMin : _fadeMax;
+            _material.SetFloat(_fadeID, _currentFadeValue);
         }
 
         /// <summary>Reacts to a reinforcement change by fading the aura in or out.</summary>
@@ -104,25 +101,26 @@ namespace JJK.CursedEnergy
         }
 
         /// <summary>Fades the aura in (edge toward min / visible).</summary>
-        public void ShowAura() => SetEdgeTarget(_edgeMin);
+        public void ShowAura() => SetFadeTarget(_fadeMax);
+
 
         /// <summary>Fades the aura out (edge toward max / hidden).</summary>
-        public void HideAura() => SetEdgeTarget(_edgeMax);
+        public void HideAura() => SetFadeTarget(_fadeMin);
 
         /// <summary>Smoothly moves the edge value to a target (clamped to the shader's range). Lower = more visible.</summary>
-        public void SetEdgeTarget(float target)
+        public void SetFadeTarget(float target)
         {
             if (_material == null) return;
 
-            target = Mathf.Clamp(target, _edgeMin, _edgeMax);
-            if (Mathf.Approximately(target, _currentEdge)) return;
+            target = Mathf.Clamp(target, _fadeMin, _fadeMax);
+            if (Mathf.Approximately(target, _currentFadeValue)) return;
 
-            float speed = target < _currentEdge ? _fadeInSpeed : _fadeOutSpeed;
+            float speed = target < _currentFadeValue ? _fadeOutSpeed : _fadeInSpeed;
 
-            if (_edgeRoutine != null) StopCoroutine(_edgeRoutine);
-            _edgeRoutine = StartCoroutine(SmoothMoveFloat(
-                value => { _currentEdge = value; _material.SetFloat(_edgeId, value); },
-                _currentEdge, target, speed));
+            if (_fadeRoutine != null) StopCoroutine(_fadeRoutine);
+            _fadeRoutine = StartCoroutine(SmoothMoveFloat(
+                value => { _currentFadeValue = value; _material.SetFloat(_fadeID, value); },
+                _currentFadeValue, target, speed));
         }
 
         /// <summary>Walks the AuraManager's Canvas/RawImage hierarchy to auto-find the RawImage (single-rig scenes only).</summary>
