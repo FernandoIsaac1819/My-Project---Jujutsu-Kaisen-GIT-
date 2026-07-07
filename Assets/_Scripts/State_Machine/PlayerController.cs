@@ -23,10 +23,25 @@ public class PlayerController : MonoBehaviour
     public bool isReinforced = false;
 
     public event System.Action<bool> ReinforceChanged;
-    
+
+    // ----- Cursed energy runtime state -----
+    public float CurrentEnergy { get; private set; }
+    public float MaxEnergy => _energyStats.maxEnergy;
+    public event System.Action<float, float> EnergyChanged;   // (current, max) — UI subscribes to this
+
     private void OnReinforce()
     {
-        isReinforced = !isReinforced;
+        // Can't switch reinforcement ON with an empty tank; switching OFF is always allowed.
+        if (!isReinforced && CurrentEnergy <= 0f) return;
+        SetReinforced(!isReinforced);
+    }
+
+    /// Central place that flips reinforcement and fires the event — used by the input
+    /// toggle above, and by the energy drain in Update() when the reserve hits empty.
+    private void SetReinforced(bool value)
+    {
+        if (isReinforced == value) return;
+        isReinforced = value;
         ReinforceChanged?.Invoke(isReinforced);   // fires with the NEW value, already flipped
     }
 
@@ -38,19 +53,13 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Priority given to the active vcam; the inactive one sits at 0.")]
     [SerializeField] private int _activeCameraPriority = 20;
 
-    [Tooltip("Camera relative movement type")]
-    [Header("Free Movement - Locomotion")]
-    
-    [SerializeField] private float _walkSpeed = 2f;
-    [SerializeField] private float _f_baseRunSpeed = 1.5f;
-    [SerializeField] private float _f_reinforcedRunSpeed = 2f;
-    private float _runSpeed = 6f;
+    [Header("Movement Stats")]
+    [Tooltip("Authored base/reinforced tuning for this character's movement (walk/run speed, jump height, dash speed & duration).")]
+    [SerializeField] private MovementStats _stats;
 
-    [Header("Free Movement - Jump")]
-    [Tooltip("Peak jump height in metres.")]
-    private float _jumpHeight = 2f;
-    [SerializeField] private float _f_baseJump = 1.5f;
-    [SerializeField] private float _f_reinforcedJump = 2f;
+    [Header("Cursed Energy")]
+    [Tooltip("Authored cursed energy tuning (max reserve, drain rate while reinforced).")]
+    [SerializeField] private CursedEnergyStats _energyStats;
 
     [Tooltip("Gravity in m/s^2 (negative). More negative = heavier, snappier falls.")]
     [SerializeField] private float _gravity = -20f;
@@ -77,18 +86,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _airControl = 0.5f;
 
     [Header("Free movement - Dash")]
-    [Tooltip("Dash burst speed in m/s.")]
-
-    private float _dashSpeed = 16f;
-    [SerializeField] private float _f_reinforcedDashSpeed;
-    [SerializeField] private float _f_baseDashSpeed;
-
-
-    [Tooltip("How long the dash burst lasts (seconds). Speed x duration = distance covered.")]
-    private float _dashDuration = 0.2f;
-    [SerializeField] private float _f_reinforcedDashDuration;
-    [SerializeField] private float _f_baseDashDuration;
-    
     [Tooltip("Seconds after a dash ends before you can dash again.")]
     [SerializeField] private float _dashCooldown = 0.8f;
 
@@ -146,12 +143,14 @@ public class PlayerController : MonoBehaviour
 
 
     // ----- Tuning accessors, read by states -----
-    public float WalkSpeed => _walkSpeed;
-    public float RunSpeed => _runSpeed;
+    // Resolved live off the MovementStats asset + the current isReinforced flag, so
+    // toggling reinforcement takes effect immediately with no per-frame caching needed.
+    public float WalkSpeed => _stats.walkSpeed;
+    public float RunSpeed => _stats.runSpeed.Get(isReinforced);
     public float RunThreshold => _runThreshold;
     public float MoveDeadzone => _moveDeadzone;
-    public float DashSpeed => _dashSpeed;
-    public float DashDuration => _dashDuration;
+    public float DashSpeed => _stats.dashSpeed.Get(isReinforced);
+    public float DashDuration => _stats.dashDuration.Get(isReinforced);
     public float TargetDashWindow => _targetDashWindow;
     public float LandDuration => _landDuration;
     public bool CanDash => Time.time >= _dashCooldownEndTime;
@@ -195,6 +194,14 @@ public class PlayerController : MonoBehaviour
         _targetBlendXHash = Animator.StringToHash(_targetBlendX);
         _targetBlendYHash = Animator.StringToHash(_targetBlendY);
 
+        if (_stats == null)
+            Debug.LogError($"[PlayerController] No MovementStats assigned on {name}. Movement speeds will all read as 0.", this);
+
+        if (_energyStats == null)
+            Debug.LogError($"[PlayerController] No CursedEnergyStats assigned on {name}. Energy will read as 0.", this);
+        else
+            CurrentEnergy = _energyStats.maxEnergy;   // start full
+
         RootMachine = new StateMachine();
         Grounded = new GroundedState(this);
         Airborne = new AirborneState(this);
@@ -225,9 +232,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        float dt = Time.deltaTime;
+        PassiveEnergyRecovery();
 
-        _runSpeed = isReinforced ? _f_reinforcedRunSpeed : _f_baseRunSpeed;
+        float dt = Time.deltaTime;
 
         // 1. Read input for this frame.
         MoveInput = _input.MoveInput;
@@ -235,6 +242,9 @@ public class PlayerController : MonoBehaviour
 
         // 1b. Lock-on: handle toggle, target switching, auto-break, re-acquire, mode swap.
         UpdateLockOn();
+
+        // 1c. Cursed energy: drain while reinforced, force reinforcement off when empty.
+        UpdateCursedEnergy(dt);
 
         // 2. Planar velocity is rebuilt fresh each frame (snappy: release = instant stop).
         _planarVelocity = Vector3.zero;
@@ -308,7 +318,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 dir = GetCameraRelativeDirection(MoveInput).normalized;
             RotateTowardsInAir(dir, dt);
-            Vector3 desired = dir * (_runSpeed * Mathf.Clamp01(MoveMagnitude));
+            Vector3 desired = dir * (RunSpeed * Mathf.Clamp01(MoveMagnitude));
             float t = 1f - Mathf.Exp(-_airControl * 12f * dt);   // framerate-independent steering
             _airVelocity = Vector3.Lerp(_airVelocity, desired, t);
         }
@@ -361,11 +371,37 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyJumpImpulse()
     {
-        _jumpHeight = isReinforced ? _f_reinforcedJump : _f_baseJump;
-        _verticalVelocity = Mathf.Sqrt(2f * -_gravity * _jumpHeight);
+        float jumpHeight = _stats.jumpHeight.Get(isReinforced);
+        _verticalVelocity = Mathf.Sqrt(2f * -_gravity * jumpHeight);
     }
 
     public void ApplyGravity(float dt) => _verticalVelocity += _gravity * dt;
+
+    // ===== Cursed energy =====
+
+    /// Drains the reserve while reinforced and forces reinforcement off the instant it
+    /// hits empty. No regen yet — once it's spent, it stays spent until that's wired up.
+    private void UpdateCursedEnergy(float dt)
+    {
+        if (_energyStats == null || !isReinforced) return;
+
+        SetEnergy(CurrentEnergy - _energyStats.drainPerSecond * dt);
+        if (CurrentEnergy <= 0f)
+            SetReinforced(false);
+            
+    }
+    public void PassiveEnergyRecovery()
+    {
+        if (_energyStats == null || isReinforced) return;
+        
+        SetEnergy(CurrentEnergy + _energyStats.recoveryPerSecond * Time.deltaTime);
+    }
+
+    private void SetEnergy(float value)
+    {
+        CurrentEnergy = Mathf.Clamp(value, 0f, MaxEnergy);
+        EnergyChanged?.Invoke(CurrentEnergy, MaxEnergy);
+    }
 
     // ===== Lock-on / target mode =====
 
