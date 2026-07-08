@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb6e8a2f1e09a440af18a6ac8a395b7, type: 3}
+  m_Name: MovementStats
+  m_EditorClassIdentifier: Assembly-CSharp::MovementStats
+  walkSpeed: 0.5
+  rotationSpeed:
+    _base: 720
+    _reinforced: 1080
+  airRotationSpeed:
+    _base: 0.5
+    _reinforced: 0.5
+  runSpeed:
+    _base: 1.5
+    _reinforced: 3
+  jumpHeight:
+    _base: 0.6
+    _reinforced: 1
+  dashCoolDown:
+    _base: 0.4
+    _reinforced: 0.2
+  dashSpeed:
+    _base: 3
+    _reinforced: 4.5
+  dashDuration:
+    _base: 0.55
+    _reinforced: 0.55

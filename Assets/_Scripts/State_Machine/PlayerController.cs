@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The Main Camera's transform (the Cinemachine Brain output). Free movement is taken relative to where it faces.")]
     [SerializeField] private Transform _cameraTransform;
     [Tooltip("Animator that plays the movement clips; crossfaded from code per state.")]
-    [SerializeField] private Animator _animator;
+    private Animator _animator;
     private CharacterController _cc;
     public bool isReinforced = false;
 
@@ -57,10 +57,11 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Authored base/reinforced tuning for this character's movement (walk/run speed, jump height, dash speed & duration).")]
     [SerializeField] private MovementStats _stats;
 
-    [Header("Cursed Energy")]
+    [Header("Cursed Energy Stats")]
     [Tooltip("Authored cursed energy tuning (max reserve, drain rate while reinforced).")]
     [SerializeField] private CursedEnergyStats _energyStats;
 
+    [Header("Gravity")]
     [Tooltip("Gravity in m/s^2 (negative). More negative = heavier, snappier falls.")]
     [SerializeField] private float _gravity = -20f;
     [Tooltip("Constant small downward speed while grounded so isGrounded stays stable on steps/slopes.")]
@@ -73,21 +74,11 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Stick magnitude below which input counts as no input.")]
     [SerializeField] private float _moveDeadzone = 0.1f;
 
-    [Header("Rotation")]
-    [Tooltip("How fast (deg/sec) the character turns to face its move direction on the ground.")]
-    [SerializeField] private float _rotationSpeed = 720f;
-    [Tooltip("How fast (deg/sec) the character turns while airborne.")]
-    [SerializeField] private float _airRotationSpeed = 360f;
-
-
     [Header("Free movement - Air Control")]
     [Range(0f, 1f)]
     [Tooltip("How much you can steer mid-air. 0 = locked to takeoff trajectory, 1 = full steering.")]
     [SerializeField] private float _airControl = 0.5f;
 
-    [Header("Free movement - Dash")]
-    [Tooltip("Seconds after a dash ends before you can dash again.")]
-    [SerializeField] private float _dashCooldown = 0.8f;
 
     [Header("Landing")]
     [Tooltip("How long the neutral landing recovery holds before returning to idle (seconds).")]
@@ -146,9 +137,12 @@ public class PlayerController : MonoBehaviour
     // Resolved live off the MovementStats asset + the current isReinforced flag, so
     // toggling reinforcement takes effect immediately with no per-frame caching needed.
     public float WalkSpeed => _stats.walkSpeed;
+    public float RotationSpeed => _stats.rotationSpeed.Get(isReinforced);
+    public float AirRotationSpeed => _stats.rotationSpeed.Get(isReinforced);
     public float RunSpeed => _stats.runSpeed.Get(isReinforced);
     public float RunThreshold => _runThreshold;
     public float MoveDeadzone => _moveDeadzone;
+    public float DashCooldown => _stats.dashCoolDown.Get(isReinforced);
     public float DashSpeed => _stats.dashSpeed.Get(isReinforced);
     public float DashDuration => _stats.dashDuration.Get(isReinforced);
     public float TargetDashWindow => _targetDashWindow;
@@ -226,6 +220,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        _animator = GetComponent<Animator>();
         RootMachine.ChangeState(IsGrounded ? Grounded : Airborne);
         SetCameraMode(false);   // begin in free-camera mode
     }
@@ -287,14 +282,14 @@ public class PlayerController : MonoBehaviour
     {
         if (direction.sqrMagnitude < 0.0001f) return;
         Quaternion target = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, target, _rotationSpeed * dt);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, target, RotationSpeed * dt);
     }
 
     public void RotateTowardsInAir(Vector3 direction, float dt)
     {
         if (direction.sqrMagnitude < 0.0001f) return;
         Quaternion target = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, target, _airRotationSpeed * dt);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, target, AirRotationSpeed * dt);
     }
 
     public void SetPlanarVelocity(Vector3 velocity) => _planarVelocity = velocity;
@@ -362,7 +357,7 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(direction);
     }
 
-    public void BeginDashCooldown() => _dashCooldownEndTime = Time.time + _dashCooldown;
+    public void BeginDashCooldown() => _dashCooldownEndTime = Time.time + DashCooldown;
 
     public void ApplyGroundedVertical()
     {

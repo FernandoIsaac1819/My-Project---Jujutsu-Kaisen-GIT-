@@ -185,6 +185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7266101081731233982}
   - component: {fileID: 8929759772270115317}
+  - component: {fileID: 9190206708727060113}
   m_Layer: 6
   m_Name: 'Aura Manager '
   m_TagString: Untagged
@@ -226,6 +227,22 @@ MonoBehaviour:
   - layerName: Aura_P2
     targetRawImage: {fileID: 8399687540761205261}
   is_initialization_successful: 0
+--- !u!114 &9190206708727060113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7990632438522613939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72d02a97702e0dc49afd270b24d7ad5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JJK.CursedEnergy.CE_Controller
+  _player: {fileID: 0}
+  _auraImage: {fileID: 0}
+  _fadeOutSpeed: 2
+  _fadeInSpeed: 2
 --- !u!1 &8610998780556059676
 GameObject:
   m_ObjectHideFlags: 0

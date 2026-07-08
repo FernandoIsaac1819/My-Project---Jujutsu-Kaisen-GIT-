@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Player2
   layers:
   - Default
   - TransparentFX
@@ -11,9 +12,9 @@ TagManager:
   - 
   - Water
   - UI
-  - Aura_P1
-  - Aura_P2
-  - burning_object
+  - Aura
+  - Aura1
+  - 
   - 
   - 
   - 
