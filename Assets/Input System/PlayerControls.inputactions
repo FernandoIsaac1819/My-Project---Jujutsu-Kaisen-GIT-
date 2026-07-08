@@ -196,6 +196,17 @@
                 },
                 {
                     "name": "",
+                    "id": "23c4c78d-6865-4f08-a333-cfaf82d7c82b",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "f2e9ba44-c423-42a7-ad56-f20975884794",
                     "path": "<Keyboard>/r",
                     "interactions": "",

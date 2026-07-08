@@ -84,6 +84,13 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How long the neutral landing recovery holds before returning to idle (seconds).")]
     [SerializeField] private float _landDuration = 0.25f;
 
+    [Header("Stopping")]
+    
+    [Tooltip("How long the walk-to-stop animation holds before settling into Idle (seconds).")]
+    [SerializeField] private float _stopWalkDuration = 0.15f;
+    [Tooltip("How long the run-to-stop animation holds before settling into Idle (seconds).")]
+    [SerializeField] private float _stopRunDuration = 0.3f;
+
     [Header("Target Movement - Locomotion")]
     [Tooltip("Run-only movement speed (m/s) while locked on.")]
     [SerializeField] private float _t_RunSpeed = 6f;
@@ -108,6 +115,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private string _dashState = "Dash";
     [Tooltip("Landing recovery state name.")]
     [SerializeField] private string _landState = "Land";
+    [Tooltip("Walk-to-stop state name.")]
+    [SerializeField] private string _stopWalkState = "Stop Walk";
+    [Tooltip("Run-to-stop state name.")]
+    [SerializeField] private string _stopRunState = "Stop Run";
     [Tooltip("Target-movement 2D blend tree state name (played while locked on).")]
     [SerializeField] private string _targetMoveState = "Target Movement";
     [Tooltip("Target dash blend tree state name (forward/back/left/right dash).")]
@@ -147,6 +158,8 @@ public class PlayerController : MonoBehaviour
     public float DashDuration => _stats.dashDuration.Get(isReinforced);
     public float TargetDashWindow => _targetDashWindow;
     public float LandDuration => _landDuration;
+    public float StopWalkDuration => _stopWalkDuration;
+    public float StopRunDuration => _stopRunDuration;
     public bool CanDash => Time.time >= _dashCooldownEndTime;
 
     // Set true by Airborne on touchdown; consumed by Grounded.Enter to play the landing recovery.
@@ -328,6 +341,8 @@ public class PlayerController : MonoBehaviour
     public void PlayFall()       => PlayAnimation(_fallState);
     public void PlayDash()       => PlayAnimation(_dashState);
     public void PlayLand()       => PlayAnimation(_landState);
+    public void PlayStopWalk()   => PlayAnimation(_stopWalkState);
+    public void PlayStopRun()    => PlayAnimation(_stopRunState);
     public void PlayTargetMove() => PlayAnimation(_targetMoveState);
     public void PlayTargetDash() => PlayAnimation(_targetDashState);
 

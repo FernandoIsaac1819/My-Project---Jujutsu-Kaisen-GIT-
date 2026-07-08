@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e033d3c964abd5e4a81e4e5415a11a55, type: 3}
   m_Name: Curse
   m_EditorClassIdentifier: Assembly-CSharp::Character
-  auraMaterial: {fileID: 2100000, guid: 351bba870ba58094595798de730272b6, type: 2}
-  weaponAuraMaterial: {fileID: 2100000, guid: 79e9984e851686a49a29640cc1418f20, type: 2}
+  auraMaterial: {fileID: 2100000, guid: 4d0b8b75047eb9e49a264f8956aa0531, type: 2}
+  weaponAuraMaterial: {fileID: 0}
