@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acb6e8a2f1e09a440af18a6ac8a395b7, type: 3}
   m_Name: MovementStats
   m_EditorClassIdentifier: Assembly-CSharp::MovementStats
-  walkSpeed: 0.5
+  walkSpeed: 1
   rotationSpeed:
     _base: 720
     _reinforced: 1080
