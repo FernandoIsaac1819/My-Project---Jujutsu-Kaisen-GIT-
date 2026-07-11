@@ -13,13 +13,13 @@ namespace JJK.CursedEnergy
     public class AuraSource : MonoBehaviour
     {
         [Tooltip("Identity asset holding this character's aura material(s).")]
-        [SerializeField] private Character _character;
-        [Tooltip("Renderer(s) captured for the body aura silhouette.")]
+        //[SerializeField] private Character _character;
+        //[Tooltip("Renderer(s) captured for the body aura silhouette.")]
         [SerializeField] private Renderer[] _bodyRenderers;
         [Tooltip("Renderer(s) captured for the weapon aura silhouette (separate capture from the body). Leave empty if this character has no weapon aura.")]
         [SerializeField] private Renderer[] _weaponRenderers;
 
-        public Character Character => _character;
+        //public Character Character => _character;
         public Renderer[] BodyRenderers => _bodyRenderers;
         public Renderer[] WeaponRenderers => _weaponRenderers;
 
